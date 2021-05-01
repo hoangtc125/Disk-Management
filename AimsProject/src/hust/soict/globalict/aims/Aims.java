@@ -126,7 +126,7 @@ public class Aims {
 	    						System.out.print("<<< ");
 	    						break;
 	    					case 5:
-	    						anOrder.showOrderedList(anOrder.getALuckyItem());
+//	    						anOrder.showOrderedList(anOrder.getALuckyItem());
 	    						System.out.println("please continue typing");
 	    						System.out.print("<<< ");
 	    						break;

@@ -13,7 +13,7 @@ public class Order {
 	private Collection<Media> itemsOrdered = new ArrayList<Media>();
 	public static int nbOrders = 0;
 	private MyDate dateOrder;
-	private int lucky = 0;
+	private int lucky = -1;
 
 	public static void deleteOrder(int index) {
 		
@@ -139,7 +139,7 @@ public class Order {
 		for(int i = 0; i < itemsOrdered.size(); i++) {
 			sum += ((ArrayList<Media>) itemsOrdered).get(i).getCost();
 		}
-		if(lucky != 0) {
+		if(lucky != -1) {
 			sum -= ((ArrayList<Media>) itemsOrdered).get(lucky).getCost(); 
 		}
 		return sum;
@@ -163,7 +163,7 @@ public class Order {
 	}
 
 	public String getDetail(int i) {
-		return (i + 1) + ((ArrayList<Media>) itemsOrdered).get(i).showInfo() + (lucky == 0 ? "" : lucky == i ? " (Lucky Item)" : "");
+		return (i + 1) + ((ArrayList<Media>) itemsOrdered).get(i).showInfo() + (lucky == -1 ? "" : lucky == i ? " (Lucky Item)" : "");
 	}
 	
 	public boolean search(String title) {
@@ -182,14 +182,18 @@ public class Order {
 		return false;
 	}
 	
-	public Media getALuckyItem() {
+	public void getALuckyItem() {
 		int random = -1;
-		if(itemsOrdered.size() == 0) return null;
+		if(itemsOrdered.size() == 0) return;
+		if(itemsOrdered.size() == 1) {
+			lucky = 0;
+			return;
+		}
 		do {
 			random = (int)(Math.random() * MAX_NUMBERS_ORDERED);
 		}while(random < 0 || random >= itemsOrdered.size());
 		lucky = random;
-		return ((ArrayList<Media>) itemsOrdered).get(random);
+		return;
 	}
 	
 	public void showOrderedList(Media disc) {
