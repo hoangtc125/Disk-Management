@@ -158,7 +158,7 @@ public class GUI extends JFrame implements ActionListener {
 		formPanel.add(tfCost = createTextField());
 		formPanel.add(new JLabel("Enter Lenght"));
 		formPanel.add(tfLenght = createTextField());
-		addPanel.add(btnAdd = createButton("Done"), BorderLayout.PAGE_END);
+		addPanel.add(btnAdd = createButton("Add"), BorderLayout.PAGE_END);
 		addPanel.add(formPanel, BorderLayout.CENTER);
 		addPanel.setVisible(true);
 		
@@ -166,7 +166,7 @@ public class GUI extends JFrame implements ActionListener {
 		removePanel.setBorder(new TitledBorder("Remove an item"));
 		removePanel.add(new JLabel("Enter Id"), BorderLayout.PAGE_START);
 		removePanel.add(tfRemoveId = createTextField(), BorderLayout.CENTER);
-		removePanel.add(btnRemove = createButton("Done"), BorderLayout.PAGE_END);
+		removePanel.add(btnRemove = createButton("Remove"), BorderLayout.PAGE_END);
 		removePanel.setVisible(true);
 		
 		showPanel = new JPanel(new GridLayout(11, 1, 1, 1));
@@ -291,6 +291,7 @@ public class GUI extends JFrame implements ActionListener {
 			btnCreateOrder.requestFocus();
 			return;
 		}
+		
 		if (e.getSource() == btnAddItem) {
 			tfStatus.setText("Enter Info of item");
 			tfStatus.setEditable(false);
@@ -570,6 +571,31 @@ public class GUI extends JFrame implements ActionListener {
 				return;
 			}
 			btnRemove.requestFocus();
+		}
+		if(e.getSource() == rad1) {
+			((ArrayList<Order>) orders).get(0).setLucky(-1);
+			update(((ArrayList<Order>) orders).get(0));
+			return;
+		}
+		if(e.getSource() == rad2) {
+			((ArrayList<Order>) orders).get(1).setLucky(-1);
+			update(((ArrayList<Order>) orders).get(1));
+			return;
+		}
+		if(e.getSource() == rad3) {
+			((ArrayList<Order>) orders).get(2).setLucky(-1);
+			update(((ArrayList<Order>) orders).get(2));
+			return;
+		}
+		if(e.getSource() == rad4) {
+			((ArrayList<Order>) orders).get(3).setLucky(-1);
+			update(((ArrayList<Order>) orders).get(3));
+			return;
+		}
+		if(e.getSource() == rad5) {
+			((ArrayList<Order>) orders).get(4).setLucky(-1);
+			update(((ArrayList<Order>) orders).get(4));
+			return;
 		}
 	}
 	public static void main(String[] args) {
