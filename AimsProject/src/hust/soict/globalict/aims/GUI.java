@@ -4,6 +4,11 @@ import hust.soict.globalict.aims.order.*;
 
 import java.awt.*; // Using AWT layouts
 import java.awt.event.*; // Using AWT event classes and listener interfaces
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*; // Using Swing components and containers
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -11,6 +16,7 @@ import javax.swing.border.TitledBorder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,23 +27,25 @@ import hust.soict.globalict.aims.media.Media;
 
 public class GUI extends JFrame implements ActionListener {
 
+	private final JFileChooser fileDialog = new JFileChooser();
 	private MemoryDaemon deamon = new MemoryDaemon();
 	private Collection<Order> orders = new ArrayList<Order>();
 	private final String title = "Aims Project";
 	private final String author = "Trần Công Hoàng 20194060";
 	private int widthGraphicsPanl = 1000;
 	private int heightGraphicsPanl = 0;
-	private JPanel multiPanel, addPanel, removePanel, showPanel, totalPanel, orderPanel, menuPanel;
+	private JPanel multiPanel, addPanel, removePanel, showPanel, totalPanel, orderPanel, menuPanel, imagePanel;
 	private JRadioButton radDVD, radCD, radBook;
-
+	private JTextArea jTextArea;
 	private JButton btnCreateOrder, btnAddItem, btnRemoveItem, btnDisplayListItems, btnDisplayLuckyList;
-	private JButton btnAdd, btnRemove;
+	private JButton btnAdd, btnRemove, btnImage, btnSort, showFileDialogButton;
 	private JRadioButton [] btnOrder;
 	private JTextField tfStatus, tfTitle, tfRemoveId, tfCategory, tfCost, tfLenght, tfArtist, tfDirectory;
 	private JTextField [] tfShow;
 	private JRadioButton rad1, rad2, rad3, rad4, rad5;
 	private JTextField tfNbOrders, tfNbItems, tfTotalCost, tfMemoryUsed;
-//	private Order anOrder = new Order();
+	private String city[] = { "Ha Noi", "Vinh Phuc", "Da Nang", "TP. Ho Chi Minh", "Nha Trang" };
+	private JComboBox cb;
 	private ButtonGroup btnGOrder = new ButtonGroup();
 
 	public GUI() {
@@ -83,13 +91,14 @@ public class GUI extends JFrame implements ActionListener {
 
 		menuPanel.add(orderPanel);
 
-		JPanel optionsPanel = new JPanel(new GridLayout(4, 1, 2, 2));
+		JPanel optionsPanel = new JPanel(new GridLayout(5, 1, 2, 2));
 		optionsPanel.setBorder(new TitledBorder("Choose an order to do"));
 		optionsPanel.add(btnAddItem = createButton("Add an items to Order"));
 		optionsPanel.add(btnRemoveItem = createButton("Remove an items to Order"));
 		optionsPanel.add(btnDisplayListItems = createButton("Display all items in the Order"));
 		optionsPanel.add(btnDisplayLuckyList = createButton("Get a lucky item"));
-		JPanel runPanel = new JPanel(new GridLayout(6, 2, 2, 2));
+		optionsPanel.add(showFileDialogButton = createButton("Open File"));
+		JPanel runPanel = new JPanel(new GridLayout(7, 2, 2, 2));
 		runPanel.setSize(menuPanel.getWidth(), optionsPanel.getHeight());
 		runPanel.setBorder(new TitledBorder("Status"));
 		runPanel.add(new JLabel("Status:"));
@@ -109,6 +118,10 @@ public class GUI extends JFrame implements ActionListener {
 		runPanel.add(new JLabel("10"));
 		runPanel.add(new JLabel("Memory used:"));
 		runPanel.add(tfMemoryUsed = createTextField());
+		cb = new JComboBox(city);
+        cb.setBounds(100, 50, 150, 20);
+        runPanel.add(new JLabel("Your Address: "));
+		runPanel.add(cb);
 		deamon.run();
 		tfMemoryUsed.setText(deamon.getMemoryUsed() + "");
 		tfMemoryUsed.setEditable(false);
@@ -169,7 +182,7 @@ public class GUI extends JFrame implements ActionListener {
 		removePanel.add(btnRemove = createButton("Remove"), BorderLayout.PAGE_END);
 		removePanel.setVisible(true);
 		
-		showPanel = new JPanel(new GridLayout(11, 1, 1, 1));
+		showPanel = new JPanel(new GridLayout(12, 1, 1, 1));
 		showPanel.setBorder(new TitledBorder("Show all items"));
 		tfShow = new JTextField[10];
 		for (JTextField jTextField : tfShow) {
@@ -178,10 +191,14 @@ public class GUI extends JFrame implements ActionListener {
 			jTextField.setEditable(false);
 		}
 		totalPanel = new JPanel(new GridLayout(1, 2, 2, 2));
-		showPanel.add(totalPanel);
 		totalPanel.add(new JLabel("Total cost: "));
 		totalPanel.add(tfTotalCost = createTextField());
 		tfTotalCost.setEditable(false);
+		imagePanel = new JPanel(new GridLayout(1, 2, 2, 2));
+		imagePanel.add(btnImage = createButton("Print Screen"));
+		imagePanel.add(btnSort = createButton("Sort"));
+		showPanel.add(totalPanel);
+		showPanel.add(imagePanel);
 		showPanel.setVisible(true);
 		totalPanel.setVisible(true);
 		
@@ -192,8 +209,8 @@ public class GUI extends JFrame implements ActionListener {
 	}
 
 	private JPanel createAuthorPanel() {
-		JPanel panel = new JPanel();
-		panel.add(new JLabel(author.toUpperCase()));
+		JPanel panel = new JPanel(new FlowLayout());
+		panel.add(new JLabel(author.toUpperCase()), BorderLayout.PAGE_START);
 		return panel;
 	}
 
@@ -235,6 +252,7 @@ public class GUI extends JFrame implements ActionListener {
 		}
 		showPanel.add(totalPanel);
 		tfTotalCost.setText(anOrder.totalCost() + "");
+		showPanel.add(imagePanel);
 		deamon.run();
 		tfMemoryUsed.setText(deamon.getMemoryUsed() + "");
 		pack();
@@ -245,6 +263,16 @@ public class GUI extends JFrame implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == showFileDialogButton) {
+			int returnVal = fileDialog.showOpenDialog(menuPanel);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                java.io.File file = fileDialog.getSelectedFile();
+                tfStatus.setText("File Selected :" + file.getName());
+                
+            } else {
+                tfStatus.setText("Open command cancelled by user.");
+            }
+		}
 		if (e.getSource() == btnCreateOrder) {
 			if(orders.size() <= 4) {
 				tfStatus.setText("an order has been created");
@@ -597,12 +625,73 @@ public class GUI extends JFrame implements ActionListener {
 			update(((ArrayList<Order>) orders).get(4));
 			return;
 		}
+		if(e.getSource() == btnImage) {
+			if(Integer.parseInt(tfNbOrders.getText()) == 0) {
+				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			makeScreenshot(this);
+			btnImage.requestFocus();
+			return;
+		}
+		if(e.getSource() == btnSort) {
+			if(Integer.parseInt(tfNbOrders.getText()) == 0) {
+				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if(rad1.isSelected()) {
+				((ArrayList<Order>) orders).get(0).sort();
+				update(((ArrayList<Order>) orders).get(0));
+				return;
+			}
+			if(rad2.isSelected()) {
+				((ArrayList<Order>) orders).get(1).sort();
+				update(((ArrayList<Order>) orders).get(1));
+				return;
+			}
+			if(rad3.isSelected()) {
+				((ArrayList<Order>) orders).get(2).sort();
+				update(((ArrayList<Order>) orders).get(2));
+				return;
+			}
+			if(rad4.isSelected()) {
+				((ArrayList<Order>) orders).get(3).sort();
+				update(((ArrayList<Order>) orders).get(3));
+				return;
+			}
+			if(rad5.isSelected()) {
+				((ArrayList<Order>) orders).get(4).sort();
+				update(((ArrayList<Order>) orders).get(4));
+				return;
+			}
+			btnSort.requestFocus();
+			return;
+		}
+	}
+	public static final void makeScreenshot(JFrame argFrame) {
+	    Rectangle rec = argFrame.getBounds();
+	    BufferedImage bufferedImage = new BufferedImage(rec.width, rec.height, BufferedImage.TYPE_INT_ARGB);
+	    argFrame.paint(bufferedImage.getGraphics());
+
+	    try {
+	        // Create temp file
+	        File temp = File.createTempFile("PrtScr_AimsProject", ".png", new File("C:/Users/ADMIN/Desktop"));
+
+	        // Use the ImageIO API to write the bufferedImage to a temporary file
+	        ImageIO.write(bufferedImage, "png", temp);
+	        // Delete temp file when program exits
+	        temp.deleteOnExit();
+	        JOptionPane.showMessageDialog(null, "Successfully", "Done", JOptionPane.INFORMATION_MESSAGE);
+			return;
+	    } catch (IOException ioe) {
+	        ioe.printStackTrace();
+	    }
 	}
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new GUI(); // Let the constructor do the job
+				GUI gui = new GUI(); // Let the constructor do the job
 				}
 			});
 	}

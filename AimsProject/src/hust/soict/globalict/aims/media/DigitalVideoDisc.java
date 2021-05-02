@@ -11,6 +11,9 @@ public class DigitalVideoDisc extends Disc implements Playable {
 		this.title = title;
 		this.category = category;
 	}
+	public DigitalVideoDisc(String title, float cost) {
+		super();
+	}
 	public DigitalVideoDisc(String title, String category, String directory) {
 		super();
 		this.title = title;
@@ -36,15 +39,13 @@ public class DigitalVideoDisc extends Disc implements Playable {
 				+ "]" + "-[" + getDirectory() + "]-[" + getLength() 
 				+ "]" + ":[" + getCost() + "]$";
 	}
-	
+	public int compareTo(DigitalVideoDisc media) {
+		return this.getCost() < media.getCost() ? -1 : 1;
+	}
 	@Override
 	public void play() {
 		// TODO Auto-generated method stub
 		System.out.println("Playing DVD: " + this.getTitle());
 		System.out.println("DVD length: " + this.getLength());
-	}
-	public int compareTo(Media dvd) {
-		return this.getCost() > dvd.getCost() ? 1 : -1;
-//		return this.getTitle().compareTo(dvd.getTitle());
 	}
 }

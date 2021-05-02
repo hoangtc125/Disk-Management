@@ -59,6 +59,13 @@ public abstract class Media implements Comparable<Media>{
 		super();
 		this.title = title;
 	}
+	
+	public Media(String title, float cost) {
+		super();
+		this.title = title;
+		this.cost = cost;
+	}
+
 	public Media(String title, String category) {
 		super();
 		this.title = title;
@@ -79,7 +86,7 @@ public abstract class Media implements Comparable<Media>{
 	public abstract String showInfo();
 	
 	public int compareTo(Media media) {
-		return this.getCost() > media.getCost() ? -1 : 1;
+		return this.getCost() < media.getCost() ? -1 : 1;
 	}
 	
 }

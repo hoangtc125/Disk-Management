@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+
 public class CompactDisc extends Disc implements Playable {
 	private String artist;
 	private class Tracks {
@@ -90,21 +91,15 @@ public class CompactDisc extends Disc implements Playable {
 				+ "]" + "-[" + getDirectory() + "]-[" + getLength() 
 				+ "]" + ":[" + getCost() + "]$";
 	}
+	public int compareTo(CompactDisc media) {
+		return this.getCost() < media.getCost() ? -1 : 1;
+	}
 	@Override
 	public void play() {
 		// TODO Auto-generated method stub
 		for (Tracks track : tracks) {
 			System.out.println("Playing track: " + track.getTitle());
 			System.out.println("DVD length: " + track.getLength());
-		}
-	}
-	public int compareTo(CompactDisc compactDisc) {
-		if(this.tracks.size() > ((CompactDisc) compactDisc).getTracks().size()) {
-			return 1;
-		} else if(this.tracks.size() < ((CompactDisc) compactDisc).getTracks().size()) {
-			return -1;
-		} else {
-			return this.getLenght() >= ((CompactDisc) compactDisc).getLenght() ? -1 : 1;
 		}
 	}
 }

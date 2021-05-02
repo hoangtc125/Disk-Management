@@ -1,56 +1,56 @@
 package hust.soict.globalict.aims.media;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class TestMediaCompareTo {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		Collection<Media> itemsOrdered = new ArrayList<Media>();
 		java.util.Collection collection = new java.util.ArrayList();
-//		DigitalVideoDisc dvd1 = new DigitalVideoDisc("the lion king", "cate 1", 87);
-//		DigitalVideoDisc dvd3 = new DigitalVideoDisc("aladin", "cate 1", 90);
-//		DigitalVideoDisc dvd2 = new DigitalVideoDisc("star wars", "cate 2", 124);
-//		// add the dvd objects to the arrayList
-//		collection.add(dvd1);
-//		collection.add(dvd2);
-//		collection.add(dvd3);
-		CompactDisc cd1 = new CompactDisc("hoang");
-		cd1.addTrack("cc", 19);
-		cd1.addTrack("ddb", 22);
-		cd1.addTrack("lol", 12);
+		Media dvd1 = new DigitalVideoDisc("the lion king", "cate 1", 87);
+		Media dvd3 = new DigitalVideoDisc("aladin", "cate 1", 90);
+		Media dvd2 = new DigitalVideoDisc("star wars", "cate 2", 124);
+		// add the dvd objects to the arrayList
+		collection.add(dvd1);
+		collection.add(dvd2);
+		collection.add(dvd3);
+		itemsOrdered.add(dvd2);
+		itemsOrdered.add(dvd1);
+		itemsOrdered.add(dvd3);
+//		DigitalVideoDisc cd1 = new DigitalVideoDisc("hoang", 12);
+//		
+//		DigitalVideoDisc cd2 = new DigitalVideoDisc("nguyen", 131);
+//		
+//		DigitalVideoDisc cd3 = new DigitalVideoDisc("tmp", 15);
 		
-		CompactDisc cd2 = new CompactDisc("nguyen");
-		cd2.addTrack("rr", 20);
-//		cd2.addTrack("loz", 13);
-		
-		CompactDisc cd3 = new CompactDisc("tmp");
-//		cd3.addTrack("rr", 41);
-		cd3.addTrack("loz", 13);
-		
-		collection.add(cd1);
-		collection.add(cd2);
-		collection.add(cd3);
+//		collection.add(cd1);
+//		collection.add(cd2);
+//		collection.add(cd3);
 		
 		// iterator through the arrayList and output their titles
 		// (unsorted order)
-		java.util.Iterator iterator = collection.iterator();
+		java.util.Iterator iterator = itemsOrdered.iterator();
 		
 		System.out.println("--------------------------------------");
 		System.out.println("the dvds currently in the order ");
 		while(iterator.hasNext()) {
-			System.out.println(((CompactDisc)iterator.next()).getArtist());
+			System.out.println(((Media)iterator.next()).getTitle());
 		}
 		// sort the collection of dvds - based on the compareTo()
 		// method
-		java.util.Collections.sort((java.util.List)collection);
+		java.util.Collections.sort((java.util.List)itemsOrdered);
 		
 		// iterator through the arrayList and output their titles
 		// (in sorted order)
-		iterator = collection.iterator();
+		iterator = itemsOrdered.iterator();
 		
 		System.out.println("--------------------------------------");
 		System.out.println("the dvds is sorted order are ");
 		while(iterator.hasNext()) {
-			CompactDisc tmp = (CompactDisc)iterator.next();
-			System.out.println(tmp.getArtist() + " : " + tmp.getLenght());
+			Media tmp = (Media)iterator.next();
+			System.out.println(tmp.getTitle() + " : " + tmp.getCost());
 		}
 	}
 

@@ -73,12 +73,6 @@ public class Book extends Media{
 		return ".Book-[" + getTitle() + "]-[" + getCategory() 
 		+ "]" + "]" + ":[" + getCost() + "]$";
 	}
-	@Override
-	public int compareTo(Media book) {
-		// TODO Auto-generated method stub
-		return this.getTitle().compareTo(book.getTitle());
-	}
-	
 	public void processContent() {
 		String [] tmp = getContent().split(" ");
 		
@@ -94,6 +88,9 @@ public class Book extends Media{
 			}
 		}
 		System.out.println(wordFrequency);
+	}
+	public int compareTo(Book media) {
+		return this.getCost() < media.getCost() ? -1 : 1;
 	}
 	public String toString() {
 		String resString = "the number of authors: " + authors.size() + "\n" + 

@@ -145,21 +145,20 @@ public class Order {
 		return sum;
 	}
 	
-	public String showOrderedList() {
-		String res = "\n********Order********\r\n" + 
+	public void showOrderedList() {
+		System.out.println("***********************Order***********************\r\n" + 
 				"Date: [" + dateOrder.toString() + "]\r\n" + 
-				"Ordered Items:\n";
-//		for(int i = 0; i < itemsOrdered.size(); i++) {
-//			res += i + ((ArrayList<Media>) itemsOrdered).get(i).showInfo() + "\n";
-//			System.out.print(i);
-//			(((ArrayList<Media>) itemsOrdered).get(i)).showInfo();
-//			System.out.println();
-//		}
-//		System.out.println("Total cost: [" + totalCost() +"]");
-//		System.out.println("***************************************************");
-//			res += "Total cost: [" + totalCost() +"]\n" + "*********************";
-			System.out.println(res);
-			return res;
+				"Ordered Items:");
+		for(int i = 0; i < itemsOrdered.size(); i++) {
+			System.out.print(i);
+			((ArrayList<Media>) itemsOrdered).get(i).showInfo();
+			if(i == lucky) {
+				System.out.print(" ::: lucky and free item");
+			}
+			System.out.println();
+		}
+		System.out.println("Total cost: [" + (totalCost()) +"]");
+		System.out.println("***************************************************");
 	}
 
 	public String getDetail(int i) {
@@ -180,6 +179,17 @@ public class Order {
 			}
 		}
 		return false;
+	}
+	
+	public static void swap(Object o1, Object o2) {
+		Object tmp = o1;
+		o1 = o2; 
+		o2 = tmp;
+	}
+	
+	public void sort() {
+		java.util.Collections.sort((java.util.List)itemsOrdered);
+		return;
 	}
 	
 	public void getALuckyItem() {
