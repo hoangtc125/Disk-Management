@@ -39,6 +39,7 @@ public class Book extends Media{
 			authors.add(author);
 		}
 	}
+	
 	// getter and setter
 	public String getContent() {
 		return content;

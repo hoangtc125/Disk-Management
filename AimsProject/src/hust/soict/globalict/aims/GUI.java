@@ -34,13 +34,13 @@ public class GUI extends JFrame implements ActionListener {
 	private final String author = "Trần Công Hoàng 20194060";
 	private int widthGraphicsPanl = 1000;
 	private int heightGraphicsPanl = 0;
-	private JPanel multiPanel, addPanel, removePanel, showPanel, totalPanel, orderPanel, menuPanel, imagePanel;
+	private JPanel multiPanel, addPanel, removePanel, showPanel, totalPanel, orderPanel, menuPanel, imagePanel, formPanel;
 	private JRadioButton radDVD, radCD, radBook;
 	private JTextArea jTextArea;
 	private JButton btnCreateOrder, btnAddItem, btnRemoveItem, btnDisplayListItems, btnDisplayLuckyList;
 	private JButton btnAdd, btnRemove, btnImage, btnSort, showFileDialogButton;
 	private JRadioButton [] btnOrder;
-	private JTextField tfStatus, tfTitle, tfRemoveId, tfCategory, tfCost, tfLenght, tfArtist, tfDirectory;
+	private JTextField tfStatus, tfTitle, tfRemoveId, tfCategory, tfCost, tfLenght, tfArtist = createTextField(), tfDirectory, tfAuthor;
 	private JTextField [] tfShow;
 	private JRadioButton rad1, rad2, rad3, rad4, rad5;
 	private JTextField tfNbOrders, tfNbItems, tfTotalCost, tfMemoryUsed;
@@ -157,12 +157,12 @@ public class GUI extends JFrame implements ActionListener {
 		btnG.add(radCD);
 		btnG.add(radDVD);
 		addPanel.add(choosePanel, BorderLayout.PAGE_START);
-		JPanel formPanel = new JPanel(new GridLayout(6, 2, 2, 2));
+		formPanel = new JPanel(new GridLayout(6, 2, 2, 2));
 		formPanel.setBorder(new TitledBorder("Add an item"));
+		formPanel.add(new JLabel("Enter Author"));
+		formPanel.add(tfAuthor = createTextField());
 		formPanel.add(new JLabel("Enter Title"));
 		formPanel.add(tfTitle = createTextField());
-		formPanel.add(new JLabel("Enter Artist"));
-		formPanel.add(tfArtist = createTextField());
 		formPanel.add(new JLabel("Enter Category"));
 		formPanel.add(tfCategory = createTextField());
 		formPanel.add(new JLabel("Enter Directory"));
@@ -242,6 +242,10 @@ public class GUI extends JFrame implements ActionListener {
 			if(i < anOrder.getItemsOrdered().size()) {
 				showPanel.add(jTextField = createTextField());
 				jTextField.setText(anOrder.getDetail(i));
+				jTextField.setBackground(Color.WHITE);
+				if(anOrder.getLucky() == i) {
+					jTextField.setBackground(Color.yellow);
+				}
 				jTextField.setEditable(false);
 				i++;
 			} else {
@@ -252,6 +256,7 @@ public class GUI extends JFrame implements ActionListener {
 		}
 		showPanel.add(totalPanel);
 		tfTotalCost.setText(anOrder.totalCost() + "");
+		tfTotalCost.setBackground(Color.PINK);
 		showPanel.add(imagePanel);
 		deamon.run();
 		tfMemoryUsed.setText(deamon.getMemoryUsed() + "");
@@ -413,17 +418,84 @@ public class GUI extends JFrame implements ActionListener {
 			btnRemoveItem.requestFocus();
 			return;
 		}
+		
+		if(radDVD.isSelected()) {
+			addPanel.remove(formPanel);
+			formPanel = new JPanel(new GridLayout(5, 2, 2, 2));
+			formPanel.setBorder(new TitledBorder("Add an item"));
+			formPanel.add(new JLabel("Enter Title"));
+			formPanel.add(tfTitle);
+			formPanel.add(new JLabel("Enter Category"));
+			formPanel.add(tfCategory);
+			formPanel.add(new JLabel("Enter Directory"));
+			formPanel.add(tfDirectory);
+			formPanel.add(new JLabel("Enter Cost"));
+			formPanel.add(tfCost);
+			formPanel.add(new JLabel("Enter Lenght"));
+			formPanel.add(tfLenght);
+			addPanel.add(formPanel, BorderLayout.CENTER);
+			pack();
+		}
+		if(radCD.isSelected()) {
+			addPanel.remove(formPanel);
+			formPanel = new JPanel(new GridLayout(6, 2, 2, 2));
+			formPanel.setBorder(new TitledBorder("Add an item"));
+			formPanel.add(new JLabel("Enter Artist"));
+			formPanel.add(tfArtist);
+			formPanel.add(new JLabel("Enter Title"));
+			formPanel.add(tfTitle);
+			formPanel.add(new JLabel("Enter Category"));
+			formPanel.add(tfCategory);
+			formPanel.add(new JLabel("Enter Directory"));
+			formPanel.add(tfDirectory);
+			formPanel.add(new JLabel("Enter Cost"));
+			formPanel.add(tfCost);
+			formPanel.add(new JLabel("Enter Lenght"));
+			formPanel.add(tfLenght);
+			addPanel.add(formPanel, BorderLayout.CENTER);
+			pack();
+		}
+		if(radBook.isSelected()) {
+			addPanel.remove(formPanel);
+			formPanel = new JPanel(new GridLayout(6, 2, 2, 2));
+			formPanel.setBorder(new TitledBorder("Add an item"));
+			formPanel.add(new JLabel("Enter Author"));
+			formPanel.add(tfAuthor);
+			formPanel.add(new JLabel("Enter Title"));
+			formPanel.add(tfTitle);
+			formPanel.add(new JLabel("Enter Category"));
+			formPanel.add(tfCategory);
+			formPanel.add(new JLabel("Enter Directory"));
+			formPanel.add(tfDirectory);
+			formPanel.add(new JLabel("Enter Cost"));
+			formPanel.add(tfCost);
+			formPanel.add(new JLabel("Enter Lenght"));
+			formPanel.add(tfLenght);
+			addPanel.add(formPanel, BorderLayout.CENTER);
+			pack();
+		}
+		
 		if(e.getSource() == btnAdd) {
 			if(Integer.parseInt(tfNbOrders.getText()) == 0) {
 				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			
-			if(tfTitle.getText().isEmpty() || tfCategory.getText().isEmpty() || tfDirectory.getText().isEmpty() || 
-				tfCost.getText().isEmpty() || tfLenght.getText().isEmpty()) {
+			if(radDVD.isSelected() && (tfTitle.getText().isEmpty() || tfCategory.getText().isEmpty() || tfDirectory.getText().isEmpty() || 
+				tfCost.getText().isEmpty() || tfLenght.getText().isEmpty())) {
 				JOptionPane.showMessageDialog(null, "Thông tin không được để trống", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			if(radCD.isSelected() && (tfArtist.getText().isEmpty() || tfTitle.getText().isEmpty() || tfCategory.getText().isEmpty() || tfDirectory.getText().isEmpty() || 
+					tfCost.getText().isEmpty() || tfLenght.getText().isEmpty())) {
+					JOptionPane.showMessageDialog(null, "Thông tin không được để trống", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			if(radBook.isSelected() && (tfAuthor.getText().isEmpty() || tfTitle.getText().isEmpty() || tfCategory.getText().isEmpty() || tfDirectory.getText().isEmpty() || 
+					tfCost.getText().isEmpty() || tfLenght.getText().isEmpty())) {
+					JOptionPane.showMessageDialog(null, "Thông tin không được để trống", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 			try {
 				Float.parseFloat(tfCost.getText());
 				Integer.parseInt(tfLenght.getText());
