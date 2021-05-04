@@ -205,7 +205,7 @@ public class cleanCodeGUI extends JFrame implements ActionListener {
 		addPanel.setVisible(true);
 		removePanel = new JPanel(new BorderLayout());
 		removePanel.setBorder(new TitledBorder("Remove an item"));
-		removePanel.add(new JLabel("Enter Id"), BorderLayout.PAGE_START);
+		removePanel.add(new JLabel("Enter Id "), BorderLayout.WEST);
 		removePanel.add(tfRemoveId = createTextField(), BorderLayout.CENTER);
 		removePanel.add(btnRemove = createButton("Remove"), BorderLayout.EAST);
 		removePanel.add(btnRemoveAll = createButton("Remove All"), BorderLayout.PAGE_END);
@@ -482,10 +482,14 @@ public class cleanCodeGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			while(((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size() > 0) {
-				((ArrayList<Order>) orders).get(chooseOrder()).removeMedia(((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size() - 1);
+			int key = JOptionPane.showConfirmDialog(null, "Remove All ?", "Are you sure ?", JOptionPane.INFORMATION_MESSAGE);
+			System.out.println(key);
+			if(key == 0) {
+				while(((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size() > 0) {
+					((ArrayList<Order>) orders).get(chooseOrder()).removeMedia(((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size() - 1);
+				}
+				update(((ArrayList<Order>) orders).get(chooseOrder()));
 			}
-			update(((ArrayList<Order>) orders).get(chooseOrder()));
 			btnRemoveAll.requestFocus();
 		}
 		
