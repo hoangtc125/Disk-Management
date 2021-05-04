@@ -182,7 +182,8 @@ public class cleanCodeGUI extends JFrame implements ActionListener {
 	private JPanel createShowPanel() {
 		multiPanel = new JPanel();
 		multiPanel.setBorder(new TitledBorder("Job Screen"));
-		multiPanel.setLayout(new GridLayout(1, 4, 2, 2));
+		multiPanel.setLayout(new GridLayout(1, 2, 2, 2));
+		JPanel addRemoveJPanel = new JPanel(new BorderLayout());
 		addPanel = new JPanel(new BorderLayout());
 		addPanel.setBorder(new TitledBorder("Add an item"));
 		JPanel choosePanel = new JPanel(new GridLayout(1, 3, 2, 2));
@@ -209,6 +210,8 @@ public class cleanCodeGUI extends JFrame implements ActionListener {
 		removePanel.add(btnRemove = createButton("Remove"), BorderLayout.EAST);
 		removePanel.add(btnRemoveAll = createButton("Remove All"), BorderLayout.PAGE_END);
 		removePanel.setVisible(true);
+		addRemoveJPanel.add(addPanel, BorderLayout.CENTER);
+		addRemoveJPanel.add(removePanel, BorderLayout.PAGE_END);
 		showPanel = new JPanel(new GridLayout(12, 1, 1, 1));
 		showPanel.setBorder(new TitledBorder("Show all items"));
 		tfShow = new JTextField[10];
@@ -228,8 +231,7 @@ public class cleanCodeGUI extends JFrame implements ActionListener {
 		showPanel.add(imagePanel);
 		showPanel.setVisible(true);
 		totalPanel.setVisible(true);
-		multiPanel.add(addPanel);
-		multiPanel.add(removePanel);
+		multiPanel.add(addRemoveJPanel);
 		multiPanel.add(showPanel);
 		return multiPanel;
 	}
@@ -455,14 +457,17 @@ public class cleanCodeGUI extends JFrame implements ActionListener {
 				return;
 			}
 			try {
-				int key = Integer.parseInt(tfRemoveId.getText());
-				if(radOrders[chooseOrder()].isSelected()) {
-					if(key > 0 && key <= ((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size()) {
-						((ArrayList<Order>) orders).get(chooseOrder()).removeMedia(key - 1);
-						update(((ArrayList<Order>) orders).get(chooseOrder()));
-					} else {
-						JOptionPane.showMessageDialog(null, "Id không tồn tại", "Lỗi nhập Id", JOptionPane.ERROR_MESSAGE);
-						return;
+				String [] tmp = tfRemoveId.getText().split(",");
+				for(int i = tmp.length - 1; i >= 0; i--) {
+					int key = Integer.parseInt(tmp[i].trim());
+					if(radOrders[chooseOrder()].isSelected()) {
+						if(key > 0 && key <= ((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size()) {
+							((ArrayList<Order>) orders).get(chooseOrder()).removeMedia(key - 1);
+							update(((ArrayList<Order>) orders).get(chooseOrder()));
+						} else {
+							JOptionPane.showMessageDialog(null, "Id không tồn tại", "Lỗi nhập Id", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 					}
 				}
 			} catch (Exception ex) {
