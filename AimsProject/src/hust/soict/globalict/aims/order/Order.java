@@ -22,6 +22,10 @@ public class Order {
 	public Collection<Media> getItemsOrdered() {
 		return itemsOrdered;
 	}
+	
+	public Media getItemsOrdered(int i) {
+		return ((ArrayList<Media>) itemsOrdered).get(i);
+	}
 
 	public int getLucky() {
 		return lucky;

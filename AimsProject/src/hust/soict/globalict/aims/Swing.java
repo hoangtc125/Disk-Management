@@ -12,9 +12,12 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 import hust.soict.globalict.aims.media.Book;
 import hust.soict.globalict.aims.media.CompactDisc;
 import hust.soict.globalict.aims.media.DigitalVideoDisc;
+import hust.soict.globalict.aims.media.Media;
 
 public class Swing extends JFrame implements ActionListener {
 
@@ -25,21 +28,22 @@ public class Swing extends JFrame implements ActionListener {
 	private final String author = "Trần Công Hoàng 20194060";
 	private int widthGraphicsPanl = 1000;
 	private int heightGraphicsPanl = 0;
-	private JPanel multiPanel, addPanel, removePanel, showPanel, totalPanel, orderPanel, menuPanel, imagePanel, formPanel = new JPanel();
+	private JPanel multiPanel, addPanel, removePanel, showPanel, totalPanel, orderPanel, menuPanel, showDetailPanel, btnPanel, formPanel = new JPanel();
 	private JPanel DVDPanel, CDPanel, BookPanel;
 	private JRadioButton [] radTypeItem = new JRadioButton[3];
 	private JButton btnCreateOrder, btnAddItem, btnRemoveItem, btnDisplayListItems, btnDisplayLuckyList;
-	private JButton btnAdd, btnRemove, btnImage, btnSort, showFileDialogButton, btnRemoveAll;
+	private JButton btnAdd, btnRemove, btnImage, btnSort, showFileDialogButton, btnRemoveAll, btnPlay;
 	private JRadioButton [] radOrders = new JRadioButton[5];
+	private JRadioButton [] radPlay = new JRadioButton[10];
 	private JTextField tfStatus = createTextField(), tfTitle = createTextField(), tfRemoveId = createTextField(), tfCategory = createTextField(), tfCost = createTextField(), tfLenght = createTextField(), tfArtist = createTextField(), tfDirectory = createTextField(), tfAuthor = createTextField();
 	private JTextField [] tfShow = new JTextField[10];
 	private JTextField tfNbOrders, tfNbItems, tfTotalCost, tfMemoryUsed;
 	private String city[] = { "Ha Noi", "Vinh Phuc", "Da Nang", "TP. Ho Chi Minh", "Nha Trang" };
 	private JComboBox cb;
-	private ButtonGroup btnGOrder = new ButtonGroup();
+	private ButtonGroup btnGOrder = new ButtonGroup(), btnGPlay = new ButtonGroup();
 
 	public Swing() {
-		getContentPane().add(createMainPanel());
+		add(createMainPanel());
 		setDisplay();
 	}
 
@@ -182,7 +186,8 @@ public class Swing extends JFrame implements ActionListener {
 	private JPanel createShowPanel() {
 		multiPanel = new JPanel();
 		multiPanel.setBorder(new TitledBorder("Job Screen"));
-		multiPanel.setLayout(new GridLayout(0, 3, 2, 2));
+		multiPanel.setLayout(new GridLayout(1, 2, 2, 2));
+		JPanel addRemoveJPanel = new JPanel(new BorderLayout());
 		addPanel = new JPanel(new BorderLayout());
 		addPanel.setBorder(new TitledBorder("Add an item"));
 		JPanel choosePanel = new JPanel(new GridLayout(1, 3, 2, 2));
@@ -204,12 +209,25 @@ public class Swing extends JFrame implements ActionListener {
 		addPanel.setVisible(true);
 		removePanel = new JPanel(new BorderLayout());
 		removePanel.setBorder(new TitledBorder("Remove an item"));
-		removePanel.add(new JLabel("Enter Id"), BorderLayout.PAGE_START);
+		removePanel.add(new JLabel("Enter Id "), BorderLayout.WEST);
 		removePanel.add(tfRemoveId = createTextField(), BorderLayout.CENTER);
 		removePanel.add(btnRemove = createButton("Remove"), BorderLayout.EAST);
 		removePanel.add(btnRemoveAll = createButton("Remove All"), BorderLayout.PAGE_END);
 		removePanel.setVisible(true);
-		showPanel = new JPanel(new GridLayout(12, 1, 1, 1));
+		addRemoveJPanel.add(addPanel, BorderLayout.CENTER);
+		addRemoveJPanel.add(removePanel, BorderLayout.PAGE_END);
+		showDetailPanel = new JPanel(new BorderLayout());
+		btnPanel = new JPanel(new GridLayout(12, 1, 1, 1));
+		btnPanel.setBorder(new TitledBorder(new LineBorder(Color.white), "Choose"));
+		for (JRadioButton jbutton : radPlay) {
+			btnPanel.add(jbutton = createRadioButton("", true));
+			jbutton.setBorder(new LineBorder(Color.green));
+			btnGPlay.add(jbutton);
+			jbutton.setVisible(true);
+		}
+		btnPanel.add(btnPlay = createButton("Play"));
+		btnPanel.add(new JLabel(""));
+		showPanel = new JPanel(new GridLayout(10, 1, 1, 1));
 		showPanel.setBorder(new TitledBorder("Show all items"));
 		tfShow = new JTextField[10];
 		for (JTextField jTextField : tfShow) {
@@ -217,20 +235,20 @@ public class Swing extends JFrame implements ActionListener {
 			jTextField.setText("NULL");
 			jTextField.setEditable(false);
 		}
-		totalPanel = new JPanel(new GridLayout(1, 2, 2, 2));
+		totalPanel = new JPanel(new GridLayout(2, 2, 2, 2));
 		totalPanel.add(new JLabel("Total cost: "));
 		totalPanel.add(tfTotalCost = createTextField());
 		tfTotalCost.setEditable(false);
-		imagePanel = new JPanel(new GridLayout(1, 2, 2, 2));
-		imagePanel.add(btnImage = createButton("Print Screen"));
-		imagePanel.add(btnSort = createButton("Sort"));
+		totalPanel.add(btnImage = createButton("Print Screen"));
+		totalPanel.add(btnSort = createButton("Sort"));
 		showPanel.add(totalPanel);
-		showPanel.add(imagePanel);
+		showDetailPanel.add(showPanel, BorderLayout.CENTER);
+		showDetailPanel.add(btnPanel, BorderLayout.EAST);
+		showDetailPanel.add(totalPanel, BorderLayout.SOUTH);
 		showPanel.setVisible(true);
 		totalPanel.setVisible(true);
-		multiPanel.add(addPanel);
-		multiPanel.add(removePanel);
-		multiPanel.add(showPanel);
+		multiPanel.add(addRemoveJPanel);
+		multiPanel.add(showDetailPanel);
 		return multiPanel;
 	}
 
@@ -261,8 +279,8 @@ public class Swing extends JFrame implements ActionListener {
 	private void update(Order anOrder) {
 		tfNbItems.setText(anOrder.getItemsOrdered().size() + "");
 		tfNbOrders.setEditable(false);
+		showDetailPanel.remove(showPanel);
 		showPanel.removeAll();
-		tfShow = new JTextField[10];
 		int i = 0;
 		for (JTextField jTextField : tfShow) {
 			if(i < anOrder.getItemsOrdered().size()) {
@@ -280,15 +298,12 @@ public class Swing extends JFrame implements ActionListener {
 				jTextField.setEditable(false);
 			}
 		}
-		showPanel.add(totalPanel);
 		tfTotalCost.setText(anOrder.totalCost() + "");
 		tfTotalCost.setBackground(Color.PINK);
-		showPanel.add(imagePanel);
 		deamon.run();
 		tfMemoryUsed.setText(deamon.getMemoryUsed() + "");
+		showDetailPanel.add(showPanel, BorderLayout.CENTER);
 		pack();
-		setLocationRelativeTo(null);
-		setVisible(true);
 		return;
 	}
 	
@@ -363,10 +378,6 @@ public class Swing extends JFrame implements ActionListener {
 		}
 		
 		if (e.getSource() == btnDisplayListItems) {
-			if(Integer.parseInt(tfNbOrders.getText()) == 0) {
-				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
 			tfStatus.setText("List of all items");
 			tfStatus.setEditable(false);
 			((ArrayList<Order>) orders).get(chooseOrder()).setLucky(-1);
@@ -375,10 +386,6 @@ public class Swing extends JFrame implements ActionListener {
 		}
 		
 		if (e.getSource() == btnDisplayLuckyList) {
-			if(Integer.parseInt(tfNbOrders.getText()) == 0) {
-				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
 			tfStatus.setText("Lucky item");
 			tfStatus.setEditable(false);
 			((ArrayList<Order>) orders).get(chooseOrder()).getALuckyItem();
@@ -401,10 +408,6 @@ public class Swing extends JFrame implements ActionListener {
 		}
 		
 		if(e.getSource() == btnAdd) {
-			if(Integer.parseInt(tfNbOrders.getText()) == 0) {
-				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
 			if(radTypeItem[2].isSelected() && (tfTitle.getText().isEmpty() || tfCategory.getText().isEmpty() || tfDirectory.getText().isEmpty() || 
 				tfCost.getText().isEmpty() || tfLenght.getText().isEmpty())) {
 				JOptionPane.showMessageDialog(null, "Thông tin không được để trống", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
@@ -450,19 +453,19 @@ public class Swing extends JFrame implements ActionListener {
 		}
 		
 		if(e.getSource() == btnRemove) {
-			if(Integer.parseInt(tfNbOrders.getText()) == 0) {
-				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
 			try {
-				int key = Integer.parseInt(tfRemoveId.getText());
-				if(radOrders[chooseOrder()].isSelected()) {
-					if(key > 0 && key <= ((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size()) {
-						((ArrayList<Order>) orders).get(chooseOrder()).removeMedia(key - 1);
-						update(((ArrayList<Order>) orders).get(chooseOrder()));
-					} else {
-						JOptionPane.showMessageDialog(null, "Id không tồn tại", "Lỗi nhập Id", JOptionPane.ERROR_MESSAGE);
-						return;
+				String [] tmp = tfRemoveId.getText().split(",");
+				for(int i = tmp.length - 1; i >= 0; i--) {
+					int key = Integer.parseInt(tmp[i].trim());
+					if(radOrders[chooseOrder()].isSelected()) {
+						if(key > 0 && key <= ((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size()) {
+							((ArrayList<Order>) orders).get(chooseOrder()).setLucky(-1);
+							((ArrayList<Order>) orders).get(chooseOrder()).removeMedia(key - 1);
+							update(((ArrayList<Order>) orders).get(chooseOrder()));
+						} else {
+							JOptionPane.showMessageDialog(null, "Id không tồn tại", "Lỗi nhập Id", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 					}
 				}
 			} catch (Exception ex) {
@@ -470,18 +473,20 @@ public class Swing extends JFrame implements ActionListener {
 				return;
 			}
 			btnRemove.requestFocus();
+			return;
 		}
 		
 		if(e.getSource() == btnRemoveAll) {
-			if(Integer.parseInt(tfNbOrders.getText()) == 0) {
-				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
-				return;
+			int key = JOptionPane.showConfirmDialog(null, "Remove All ?", "Are you sure ?", JOptionPane.INFORMATION_MESSAGE);
+			if(key == 0) {
+				((ArrayList<Order>) orders).get(chooseOrder()).setLucky(-1);
+				while(((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size() > 0) {
+					((ArrayList<Order>) orders).get(chooseOrder()).removeMedia(((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size() - 1);
+				}
+				update(((ArrayList<Order>) orders).get(chooseOrder()));
 			}
-			while(((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size() > 0) {
-				((ArrayList<Order>) orders).get(chooseOrder()).removeMedia(((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size() - 1);
-			}
-			update(((ArrayList<Order>) orders).get(chooseOrder()));
 			btnRemoveAll.requestFocus();
+			return;
 		}
 		
 		if(e.getSource() == radOrders[chooseOrder()]) {
@@ -491,24 +496,44 @@ public class Swing extends JFrame implements ActionListener {
 		}
 		
 		if(e.getSource() == btnImage) {
-			if(Integer.parseInt(tfNbOrders.getText()) == 0) {
-				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
 			makeScreenshot(this);
 			btnImage.requestFocus();
 			return;
 		}
 		
 		if(e.getSource() == btnSort) {
-			if(Integer.parseInt(tfNbOrders.getText()) == 0) {
-				JOptionPane.showMessageDialog(null, "Chưa có order nào được tạo", "Order chưa được tạo", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
 			((ArrayList<Order>) orders).get(chooseOrder()).sort();
 			update(((ArrayList<Order>) orders).get(chooseOrder()));
 			btnSort.requestFocus();
 			return;
+		}
+		
+		for(int i = 0; i < ((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered().size(); i++) {
+			System.out.println(i);
+			if(e.getSource() == radPlay[i]) {
+				System.out.println(i);
+				Media media = ((ArrayList<Order>) orders).get(chooseOrder()).getItemsOrdered(i);
+				if(media instanceof Book) {
+					JOptionPane.showMessageDialog(null, "Hello", "Play", JOptionPane.INFORMATION_MESSAGE);
+					return;
+				} else if(media instanceof DigitalVideoDisc) {
+					DigitalVideoDisc dvd = (DigitalVideoDisc) media;
+					try {
+						dvd.play();
+					} catch (PlayerException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} else {
+					CompactDisc CD = (CompactDisc) media;
+					try {
+						CD.play();
+					} catch (PlayerException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 	

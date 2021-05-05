@@ -1,5 +1,7 @@
 package hust.soict.globalict.aims.media;
 
+import hust.soict.globalict.aims.PlayerException;
+
 public class Disc extends Media implements Playable { 
 	protected int length;
 	protected String directory;
@@ -29,11 +31,9 @@ public class Disc extends Media implements Playable {
 	}
 	
 	@Override
-	public void play() {
-		// TODO Auto-generated method stub
-		System.out.println("Playing DVD: " + this.getTitle());
-		System.out.println("DVD length: " + this.getLength());
+	public void play() throws PlayerException {
 	}
+	
 	public String showInfo() {
 		return "";
 	}

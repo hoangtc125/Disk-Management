@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import hust.soict.globalict.aims.PlayerException;
+
 
 public class CompactDisc extends Disc implements Playable {
 	private String artist;
@@ -95,11 +97,11 @@ public class CompactDisc extends Disc implements Playable {
 		return this.getCost() < media.getCost() ? -1 : 1;
 	}
 	@Override
-	public void play() {
-		// TODO Auto-generated method stub
-		for (Tracks track : tracks) {
-			System.out.println("Playing track: " + track.getTitle());
-			System.out.println("DVD length: " + track.getLength());
+	public void play() throws PlayerException {
+		if (this.getLength() > 0) {
+		// TODO Play CD as you have implemented
+		} else {
+			throw new PlayerException("ERROR: CD length is non-positive!");
 		}
 	}
 }
